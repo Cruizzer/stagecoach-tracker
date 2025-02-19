@@ -1,26 +1,29 @@
 name: Bus Tracker
 
 on:
-  schedule:
-    - cron: '30 8 * * 1-5'
-  workflow_dispatch:
+ schedule:
+   - cron: '30 8 * * 1-5'
+ workflow_dispatch:
 
 jobs:
-  run-bus-tracker:
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
+ run-bus-tracker:
+   runs-on: ubuntu-latest
+   timeout-minutes: 40
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+   steps:
+     - name: Checkout repository
+       uses: actions/checkout@v3
 
-      - name: Set up Rust
-        uses: actions/setup-rust@v1.6.0
+     - name: Set up Rust
+       uses: actions-rust-lang/setup-rust-toolchain@v1
+       with:
+         toolchain: stable
+         components: clippy, rustfmt
 
-      - name: Install dependencies
-        run: |
-          cargo install
+     - name: Install dependencies
+       run: |
+         cargo install
 
-      - name: Run the Bus Tracker script
-        run: |
-          cargo run
+     - name: Run the Bus Tracker script
+       run: |
+         cargo run
