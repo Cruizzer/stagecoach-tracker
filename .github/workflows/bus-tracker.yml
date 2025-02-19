@@ -29,7 +29,7 @@ jobs:
       - name: Cache built binary
         uses: actions/cache@v3
         with:
-          path: target/release/bus_tracker
+          path: target/release/bus_notification_app
           key: rust-binary-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             rust-binary-${{ runner.os }}-
@@ -37,7 +37,7 @@ jobs:
       - name: Check if binary exists
         id: check_binary
         run: |
-          if [ -f target/release/bus_tracker ]; then
+          if [ -f target/release/bus_notification_app ]; then
             echo "exists=true" >> $GITHUB_ENV
           else
             echo "exists=false" >> $GITHUB_ENV
@@ -48,4 +48,4 @@ jobs:
         run: cargo build --release
 
       - name: Run the Bus Tracker script
-        run: ./target/release/bus_tracker
+        run: ./target/release/bus_notification_app
