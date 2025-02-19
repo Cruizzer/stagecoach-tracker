@@ -1,0 +1,28 @@
+name: Bus Tracker
+
+on:
+  schedule:
+    - cron: '30 8 * * 1-5'  # Runs at 8:30 AM Monday to Friday (UTC)
+  workflow_dispatch:  # Allows manual triggering of the action
+
+jobs:
+  run-bus-tracker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: '1.67.0'
+
+      - name: Install dependencies
+        run: |
+          cargo install
+
+      - name: Run the Bus Tracker script
+        run: |
+          cargo run
