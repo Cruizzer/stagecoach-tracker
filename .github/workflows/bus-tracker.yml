@@ -24,9 +24,28 @@ jobs:
         with:
           toolchain: stable
           components: clippy, rustfmt
+          cache: true
 
-      - name: Install dependencies
-        run: cargo install --path .
+      - name: Cache built binary
+        uses: actions/cache@v3
+        with:
+          path: target/release/bus_tracker
+          key: rust-binary-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            rust-binary-${{ runner.os }}-
+
+      - name: Check if binary exists
+        id: check_binary
+        run: |
+          if [ -f target/release/bus_tracker ]; then
+            echo "exists=true" >> $GITHUB_ENV
+          else
+            echo "exists=false" >> $GITHUB_ENV
+          fi
+
+      - name: Build project (if needed)
+        if: env.exists == 'false'
+        run: cargo build --release
 
       - name: Run the Bus Tracker script
-        run: cargo run
+        run: ./target/release/bus_tracker
