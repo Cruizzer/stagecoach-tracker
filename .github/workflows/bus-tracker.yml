@@ -14,6 +14,7 @@ jobs:
       LAT: ${{ secrets.LAT }}
       LNG: ${{ secrets.LNG }}
       RADIUS: ${{ secrets.RADIUS }}
+      BUS_STOPS: ${{ secrets.BUS_STOPS }}
 
     steps:
       - name: Checkout repository
