@@ -14,7 +14,7 @@ struct BusStop {
 }
 
 const API_URL: &str = "https://api.stagecoach-technology.net/vehicle-tracking/v1/vehicles";
-const SCRIPT_TIMEOUT: Duration = Duration::from_secs(2 * 60); // 40 minutes
+const SCRIPT_TIMEOUT: Duration = Duration::from_secs(40 * 60); // 40 minutes
 
 #[tokio::main]
 async fn main() {
