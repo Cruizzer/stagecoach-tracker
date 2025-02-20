@@ -22,12 +22,12 @@ async fn main() {
 
     let client = Client::new();
     let bus_stops = load_bus_stops();
-    let start_time = Instant::now(); // Track start time
+    let start_time = Instant::now(); // Track start time of script.
 
     loop {
         // Stop execution if 40 minutes have passed
         if start_time.elapsed() >= SCRIPT_TIMEOUT {
-            println!("✅ Script completed successfully after 40 minutes.");
+            println!("Script completed successfully after 40 minutes!");
             return;
         }
 
