@@ -24,16 +24,20 @@ jobs:
         with:
           toolchain: stable
           components: clippy, rustfmt
-          cache: true
 
-      - name: Cache built binary
+      # Cache Rust dependencies and the target directory (where the binary is built)
+      - name: Cache Cargo registry and target
         uses: actions/cache@v3
         with:
-          path: target/release/bus_notification_app
-          key: rust-binary-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: rust-deps-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            rust-binary-${{ runner.os }}-
+            rust-deps-${{ runner.os }}-
 
+      # Check if binary exists (to skip build if already built and cached)
       - name: Check if binary exists
         id: check_binary
         run: |
@@ -43,9 +47,11 @@ jobs:
             echo "exists=false" >> $GITHUB_ENV
           fi
 
+      # Build project only if the binary doesn't exist
       - name: Build project (if needed)
         if: env.exists == 'false'
         run: cargo build --release
 
+      # Run the Bus Tracker script (use the built binary)
       - name: Run the Bus Tracker script
         run: ./target/release/bus_notification_app

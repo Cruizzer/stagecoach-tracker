@@ -1,9 +1,8 @@
 use dotenv::dotenv;
 use std::env;
 use reqwest::Client;
-use tokio::time;
+use tokio::time::{self, Duration, Instant};
 use chrono::{Local, Timelike};
-use std::time::Duration;
 use serde_json::Value;
 use std::f64::consts::PI;
 
@@ -15,7 +14,7 @@ struct BusStop {
 }
 
 const API_URL: &str = "https://api.stagecoach-technology.net/vehicle-tracking/v1/vehicles";
-
+const SCRIPT_TIMEOUT: Duration = Duration::from_secs(2 * 60); // 40 minutes
 
 #[tokio::main]
 async fn main() {
@@ -23,14 +22,17 @@ async fn main() {
 
     let client = Client::new();
     let bus_stops = load_bus_stops();
+    let start_time = Instant::now(); // Track start time
 
     loop {
-        let now = Local::now();
-        let hour = now.hour();
-        let minute = now.minute();
-        let second = now.second();
+        // Stop execution if 40 minutes have passed
+        if start_time.elapsed() >= SCRIPT_TIMEOUT {
+            println!("✅ Script completed successfully after 40 minutes.");
+            return;
+        }
 
-        println!("\nCurrent time: {:02}:{:02}:{:02}", hour, minute, second);
+        let now = Local::now();
+        println!("\nCurrent time: {:02}:{:02}:{:02}", now.hour(), now.minute(), now.second());
 
         if let Err(e) = check_buses(&client, &bus_stops).await {
             eprintln!("Error checking buses: {}", e);
