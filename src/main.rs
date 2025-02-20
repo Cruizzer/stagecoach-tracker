@@ -44,41 +44,55 @@ async fn main() {
 
 // Load bus stops from .env file
 fn load_bus_stops() -> Vec<BusStop> {
-    let stops_str = env::var("BUS_STOPS").unwrap_or_default();
-    
-    println!("============== Bus Stops Loaded ==============");
+    let stops_str = match env::var("BUS_STOPS") {
+        Ok(value) => value,
+        Err(_) => {
+            eprintln!("Warning: BUS_STOPS environment variable not set. No bus stops loaded.");
+            return Vec::new();  // Return an empty vector if the variable is missing
+        }
+    };
+
+    // Split the string into individual stops, ensuring that invalid or empty entries are ignored
     let stops = stops_str
-        .split(';')  
+        .split(';')  // Split by semicolon for multiple stops
         .filter_map(|s| {
             let mut parts = s.split(',');
+            // Check if there are exactly 3 parts (name, lat, lng), if not, skip
             if let (Some(name), Some(lat), Some(lng)) = (
                 parts.next().map(|x| x.trim()),
-                parts.next().map(|x| x.trim()), 
+                parts.next().map(|x| x.trim()),
                 parts.next().map(|x| x.trim())
             ) {
-                Some(BusStop {
-                    name: name.to_string(),
-                    lat: lat.parse().ok()?,
-                    lng: lng.parse().ok()?,
-                })
+                // Parse latitude and longitude safely, log and skip invalid ones
+                let lat = lat.parse::<f64>().ok();
+                let lng = lng.parse::<f64>().ok();
+                if let (Some(lat), Some(lng)) = (lat, lng) {
+                    Some(BusStop {
+                        name: name.to_string(),
+                        lat,
+                        lng,
+                    })
+                } else {
+                    eprintln!("Warning: Invalid coordinates for bus stop '{}'. Skipping.", name);
+                    None
+                }
             } else {
+                eprintln!("Warning: Invalid bus stop format. Skipping entry.");
                 None
             }
         })
-        .collect::<Vec<BusStop>>();  // Collect into a vector of BusStop objects
+        .collect::<Vec<BusStop>>();
 
-    // Print the bus stops
-    for stop in &stops {
-        println!(
-            "Stop Name: {}, Latitude: {}, Longitude: {}",
-            stop.name, stop.lat, stop.lng
-        );
+    // If you need to debug, consider logging the count of bus stops instead of their details
+    if !stops.is_empty() {
+        println!("Loaded {} bus stops.", stops.len());
+    } else {
+        println!("No valid bus stops found.");
     }
-
-    println!("=============================================");
 
     stops
 }
+
 
 async fn check_buses(client: &Client, bus_stops: &[BusStop]) -> Result<(), reqwest::Error> {
     let lat: f64 = env::var("LAT")
