@@ -15,6 +15,9 @@ jobs:
       LNG: ${{ secrets.LNG }}
       RADIUS: ${{ secrets.RADIUS }}
       BUS_STOPS: ${{ secrets.BUS_STOPS }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      
 
     steps:
       - name: Checkout repository

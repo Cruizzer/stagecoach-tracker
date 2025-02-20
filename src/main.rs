@@ -130,7 +130,7 @@ async fn check_buses(client: &Client, bus_stops: &[BusStop]) -> Result<(), reqwe
                 let service_description = service["serviceDescription"].as_str().unwrap_or("No description");
         
                 // Print the current bus's location and service details
-                println!("Found (Bus {} [{}]): lat = {}, lng = {}", service_number, service_description, bus_lat, bus_lng);
+                // println!("Found (Bus {} [{}]): lat = {}, lng = {}", service_number, service_description, bus_lat, bus_lng);
         
                 if let Some(nearby_stop) = find_nearest_stop(bus_lat, bus_lng, bus_stops) {
                     let message = format!(
@@ -139,10 +139,11 @@ async fn check_buses(client: &Client, bus_stops: &[BusStop]) -> Result<(), reqwe
                     );
         
                     send_telegram_message(&message).await?;
-                    println!("Bus {} found near: {}", service_number, nearby_stop);
-                } else {
-                    println!("Bus {} is not near any stops.", service_number);
+                    // println!("Bus {} found near: {}", service_number, nearby_stop);
                 }
+                // else {
+                //     println!("Bus {} is not near any stops.", service_number);
+                // }
             }
         }
     } else {
@@ -183,11 +184,11 @@ fn find_nearest_stop(bus_lat: f64, bus_lng: f64, bus_stops: &[BusStop]) -> Optio
         let distance = haversine_distance(bus_lat, bus_lng, stop.lat, stop.lng);
 
         // Print debugging information
-        println!("Stop {} - {:.2} meters away from bus (Lat: {}, Lng: {})", stop.name, distance, stop.lat, stop.lng);
+        // println!("Stop {} - {:.2} meters away from bus (Lat: {}, Lng: {})", stop.name, distance, stop.lat, stop.lng);
 
         // Check if the bus is within 200 meters of the stop
         if distance <= MAX_DISTANCE_METERS {
-            println!("Bus is within range of stop: {}", stop.name);
+            // println!("Bus is within range of stop: {}", stop.name);
             return Some(stop.name.clone());
         }
     }
