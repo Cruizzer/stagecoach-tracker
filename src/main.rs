@@ -14,7 +14,7 @@ struct BusStop {
 }
 
 const API_URL: &str = "https://api.stagecoach-technology.net/vehicle-tracking/v1/vehicles";
-const SCRIPT_TIMEOUT: Duration = Duration::from_secs(40 * 60); // 40 minutes
+const SCRIPT_TIMEOUT: Duration = Duration::from_secs(30 * 60); // 30 minutes
 
 #[tokio::main]
 async fn main() {
@@ -25,9 +25,9 @@ async fn main() {
     let start_time = Instant::now(); // Track start time of script.
 
     loop {
-        // Stop execution if 40 minutes have passed
+        // Stop execution if 30 minutes have passed
         if start_time.elapsed() >= SCRIPT_TIMEOUT {
-            println!("Script completed successfully after 40 minutes!");
+            println!("Script completed successfully after 30 minutes!");
             return;
         }
 
@@ -73,7 +73,7 @@ fn load_bus_stops() -> Vec<BusStop> {
                         lng,
                     })
                 } else {
-                    eprintln!("Warning: Invalid coordinates for bus stop '{}'. Skipping.", name);
+                    eprintln!("Warning: Invalid coordinates for a bus stop. Skipping.");
                     None
                 }
             } else {
@@ -209,6 +209,6 @@ async fn send_telegram_message(message: &str) -> Result<(), reqwest::Error> {
     );
 
     let response = client.get(&url).send().await?;
-    println!("Telegram message sent: {:?}", response.text().await?);
+    // println!("Telegram message sent: {:?}", response.text().await?);
     Ok(())
 }
