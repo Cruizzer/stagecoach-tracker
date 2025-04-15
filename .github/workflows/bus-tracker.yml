@@ -2,13 +2,13 @@ name: Bus Tracker
 
 on:
   schedule:
-    - cron: '30 8 * * 1-5'
+    - cron: '30 7 * * 1-5'
   workflow_dispatch:
 
 jobs:
   run-bus-tracker:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 30
 
     env:
       LAT: ${{ secrets.LAT }}
