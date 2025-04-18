@@ -208,7 +208,7 @@ async fn send_telegram_message(message: &str) -> Result<(), reqwest::Error> {
         bot_token, chat_id, message
     );
 
-    let response = client.get(&url).send().await?;
+    let _response = client.get(&url).send().await?;
     // println!("Telegram message sent: {:?}", response.text().await?);
     Ok(())
 }
